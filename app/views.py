@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from app.models import UserProfile
 from app.forms import LoginForm
 from werkzeug.security import check_password_hash
-
+from app.forms import UploadForm
 ###
 # Routing for your application.
 ###
@@ -20,21 +20,26 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Mia Hill")
 
 
 @app.route('/upload', methods=['POST', 'GET'])
+@login_required
 def upload():
     # Instantiate your form class
-
+    form = UploadForm()
     # Validate file upload on submit
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         # Get file data and save to your uploads folder
-
+        ufile = form.file.data
+        filename = secure_filename(ufile.filename)
+        ufldr = app.config['UPLOAD_FOLDER']
+        ufile.save(os.path.join(ufldr,filename))
+        
         flash('File Saved', 'success')
-        return redirect(url_for('home')) # Update this to redirect the user to a route that displays all uploaded image files
+        return redirect(url_for('upload')) # Update this to redirect the user to a route that displays all uploaded image files
 
-    return render_template('upload.html')
+    return render_template('upload.html',form=form)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -51,7 +56,7 @@ def login():
         # Using your model, query database for a user based on the username
         # and password submitted. Remember you need to compare the password hash.
         user = db.session.execute(db.select(UserProfile).filter_by(username=username)).scalar()
-        if user is not None and check_password_hash(user.password_hash, password):
+        if user is not None and check_password_hash(user.password, password):
             
         # You will need to import the appropriate function to do so.
         # Then store the result of that query to a `user` variable so it can be
