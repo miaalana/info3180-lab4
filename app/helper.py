@@ -7,7 +7,7 @@ def get_uploaded_images():
     
     for subdir, dirs, files in os.walk(ufldr):
         for file in files:
-            if file.lower().endswith(('.png','.jpg')):
+            if file.lower().endswith(('.png','.jpg','.jpeg')):
                 fpath = os.path.join(subdir,file)
                 upimgs.append(file)
     return upimgs
