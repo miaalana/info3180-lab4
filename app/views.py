@@ -49,6 +49,7 @@ def get_image(filename):
     return send_from_directory(os.path.join(root_dir,ufldr),filename)
 
 @app.route("/files")
+@login_required
 def files():
     imagelist = get_uploaded_images()
     return render_template('files.html',imagelist=imagelist)

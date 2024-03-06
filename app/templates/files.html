@@ -2,8 +2,11 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<head>
+<link rel="stylesheet" href="{{url_for('static',filename='css/app.css') }}"/>
 <h1 class="page-header">View Images</h1>
-
+</head>
+<body>
 {% include 'flash_messages.html' %}
 <ul>
     {% for filename in imagelist %}
@@ -12,5 +15,5 @@
     </li>
     {% endfor %}
 </ul>
-   
+</body>
 {% endblock %}
